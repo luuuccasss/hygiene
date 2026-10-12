@@ -1,6 +1,8 @@
 package fr.luuuccasss.hygiene;
 
+import java.util.ArrayList;
 import java.util.List;
+import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.minecraft.particle.DustParticleEffect;
 import net.minecraft.particle.ParticleEffect;
 import net.minecraft.server.network.ServerPlayerEntity;
@@ -12,8 +14,9 @@ import org.joml.Vector3f;
 
 /**
  * Ce que tout le monde voit et entend autour d'un joueur sale.
- * Le joueur concerné ne voit que quelques mouches tenues à distance de sa caméra,
- * pour que les particules ne lui bouchent pas la vue.
+ * Les clients qui ont le mod reçoivent un {@link StinkPayload} et dessinent eux-mêmes des mouches en 3D ;
+ * les autres voient des particules. Sans le mod, le joueur concerné ne voit que quelques mouches
+ * tenues à distance de sa caméra, pour que les particules ne lui bouchent pas la vue.
  */
 public final class Stench {
     private static final DustParticleEffect FLY = new DustParticleEffect(new Vector3f(0.05f, 0.05f, 0.05f), 0.6f);
@@ -26,7 +29,18 @@ public final class Stench {
     /** Appelé toutes les 5 ticks. */
     public static void show(ServerWorld world, ServerPlayerEntity player, Stage stage) {
         Random random = world.random;
-        List<ServerPlayerEntity> others = world.getPlayers(p -> p != player && p.squaredDistanceTo(player) < VIEW_DISTANCE * VIEW_DISTANCE);
+        List<ServerPlayerEntity> nearby = world.getPlayers(p -> p.squaredDistanceTo(player) < VIEW_DISTANCE * VIEW_DISTANCE);
+        StinkPayload payload = new StinkPayload(player.getId(), stage.ordinal());
+        List<ServerPlayerEntity> others = new ArrayList<>();
+        boolean selfModded = false;
+        for (ServerPlayerEntity viewer : nearby) {
+            if (ServerPlayNetworking.canSend(viewer, StinkPayload.ID)) {
+                ServerPlayNetworking.send(viewer, payload);
+                if (viewer == player) selfModded = true;
+            } else if (viewer != player) {
+                others.add(viewer);
+            }
+        }
         int flies = switch (stage) {
             case ODEUR -> 1;
             case PUANT -> 4;
@@ -40,8 +54,8 @@ public final class Stench {
             send(world, others, FLY, player.getX() + Math.cos(angle) * radius,
                 player.getY() + 0.6 + random.nextDouble() * 1.4, player.getZ() + Math.sin(angle) * radius, 1, 0.02, 0);
         }
-        // pour le joueur sale : quelques mouches à bonne distance, sous le niveau des yeux
-        for (int i = 0; i < (flies + 2) / 3; i++) {
+        // pour le joueur sale sans le mod : quelques mouches à bonne distance, sous le niveau des yeux
+        for (int i = 0; i < (selfModded ? 0 : (flies + 2) / 3); i++) {
             double angle = random.nextDouble() * Math.PI * 2;
             double radius = 1.2 + random.nextDouble() * 0.6;
             world.spawnParticles(player, FLY, false, player.getX() + Math.cos(angle) * radius,
