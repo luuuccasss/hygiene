@@ -5,6 +5,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 import net.minecraft.entity.ai.NoPenaltyTargeting;
+import net.minecraft.entity.effect.StatusEffectInstance;
+import net.minecraft.entity.effect.StatusEffects;
 import net.minecraft.entity.ai.brain.MemoryModuleType;
 import net.minecraft.entity.ai.brain.WalkTarget;
 import net.minecraft.entity.passive.AnimalEntity;
@@ -28,6 +30,18 @@ public final class Reactions {
     public static void react(ServerWorld world, ServerPlayerEntity player, Stage stage) {
         if (stage.animalRadius > 0) animalsFlee(world, player, stage.animalRadius);
         if (stage.villagerRadius > 0) villagersReact(world, player, stage);
+        if (stage == Stage.INFECT) nauseateNeighbours(world, player);
+    }
+
+    /** Les joueurs collés à un joueur infect ont la nausée. */
+    private static void nauseateNeighbours(ServerWorld world, ServerPlayerEntity stinky) {
+        for (ServerPlayerEntity other : world.getPlayers(p -> p != stinky && p.isAlive() && !p.isSpectator()
+            && p.squaredDistanceTo(stinky) < 9)) {
+            if (!other.hasStatusEffect(StatusEffects.NAUSEA)) {
+                other.sendMessage(Text.literal(stinky.getName().getString() + " pue atrocement…").formatted(Stage.INFECT.color), true);
+            }
+            other.addStatusEffect(new StatusEffectInstance(StatusEffects.NAUSEA, 140, 0, false, false));
+        }
     }
 
     /**
