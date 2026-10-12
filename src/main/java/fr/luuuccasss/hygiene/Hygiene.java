@@ -83,5 +83,6 @@ public class Hygiene implements ModInitializer {
 
     public static void forget(ServerPlayerEntity player) {
         LAST_STAGE.remove(player.getUuid());
+        Reactions.forget(player);
     }
 }
