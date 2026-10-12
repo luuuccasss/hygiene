@@ -4,9 +4,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
-import net.minecraft.entity.ai.NoPenaltyTargeting;
 import net.minecraft.entity.effect.StatusEffectInstance;
 import net.minecraft.entity.effect.StatusEffects;
+import net.minecraft.entity.mob.PathAwareEntity;
 import net.minecraft.entity.ai.brain.MemoryModuleType;
 import net.minecraft.entity.ai.brain.WalkTarget;
 import net.minecraft.entity.passive.AnimalEntity;
@@ -64,13 +64,20 @@ public final class Reactions {
             if (stage == Stage.ODEUR) continue;
             world.spawnParticles(ParticleTypes.SNEEZE, villager.getX(), villager.getEyeY(), villager.getZ(), 2, 0.2, 0.1, 0.2, 0.01);
             Vec3d target = stage == Stage.INFECT ? home(world, villager) : null;
-            if (target == null) target = NoPenaltyTargeting.findFrom(villager, 14, 6, player.getPos());
-            if (target != null) {
-                villager.getBrain().remember(MemoryModuleType.WALK_TARGET,
-                    new WalkTarget(target, stage == Stage.INFECT ? 0.9f : 0.75f, 1));
-            }
+            if (target == null) target = awayFrom(villager, player, 12);
+            villager.getBrain().remember(MemoryModuleType.WALK_TARGET,
+                new WalkTarget(target, stage == Stage.INFECT ? 0.9f : 0.75f, 1));
         }
         comment(player, stage, random);
+    }
+
+    /** Point à {@code distance} blocs, à l'opposé du joueur (avec un peu de hasard pour ne pas fuir en file indienne). */
+    private static Vec3d awayFrom(PathAwareEntity entity, ServerPlayerEntity player, double distance) {
+        Vec3d dir = entity.getPos().subtract(player.getPos()).multiply(1, 0, 1);
+        if (dir.lengthSquared() < 1.0E-4) dir = new Vec3d(1, 0, 0);
+        double spread = (entity.getRandom().nextDouble() - 0.5) * 0.8;
+        dir = dir.normalize().rotateY((float) spread);
+        return entity.getPos().add(dir.multiply(distance));
     }
 
     private static Vec3d home(ServerWorld world, VillagerEntity villager) {
@@ -109,8 +116,8 @@ public final class Reactions {
         Box area = player.getBoundingBox().expand(radius);
         for (AnimalEntity animal : world.getEntitiesByClass(AnimalEntity.class, area, a -> a.isAlive() && !a.isLeashed() && !a.hasPassengers())) {
             if (animal instanceof TameableEntity tameable && tameable.isSitting()) continue;
-            Vec3d away = NoPenaltyTargeting.findFrom(animal, 12, 6, player.getPos());
-            if (away != null) animal.getNavigation().startMovingTo(away.x, away.y, away.z, 1.5);
+            Vec3d away = awayFrom(animal, player, 10);
+            animal.getNavigation().startMovingTo(away.x, away.y, away.z, 1.5);
         }
     }
 }
