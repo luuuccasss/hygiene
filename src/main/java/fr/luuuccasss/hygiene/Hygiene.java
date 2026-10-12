@@ -6,6 +6,7 @@ import java.util.UUID;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
 import net.fabricmc.fabric.api.event.player.AttackEntityCallback;
+import net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents;
 import net.fabricmc.fabric.api.event.player.PlayerBlockBreakEvents;
 import net.minecraft.particle.ParticleTypes;
 import net.minecraft.server.network.ServerPlayerEntity;
@@ -37,6 +38,7 @@ public class Hygiene implements ModInitializer {
         PlayerBlockBreakEvents.AFTER.register((world, player, pos, state, blockEntity) -> {
             if (player instanceof Dirty dirty) dirty.hygiene$setDirt(dirty.hygiene$getDirt() + BLOCK_BREAK);
         });
+        ServerPlayConnectionEvents.DISCONNECT.register((handler, server) -> forget(handler.getPlayer()));
         AttackEntityCallback.EVENT.register((player, world, hand, entity, hit) -> {
             if (player instanceof Dirty dirty) dirty.hygiene$setDirt(dirty.hygiene$getDirt() + ATTACK);
             return ActionResult.PASS;
@@ -52,7 +54,9 @@ public class Hygiene implements ModInitializer {
         else if (player.isTouchingWaterOrRain()) dirt -= WASH_RAIN;
         else dirt += BASE_RATE + (player.isSprinting() ? SPRINT_RATE : 0f);
         dirty.hygiene$setDirt(dirt);
-        announceStage(world, player, dirty.hygiene$getStage());
+        Stage stage = dirty.hygiene$getStage();
+        announceStage(world, player, stage);
+        if (stage != Stage.PROPRE && (world.getTime() + player.getId()) % 5 == 0) Stench.show(world, player, stage);
     }
 
     private static void announceStage(ServerWorld world, ServerPlayerEntity player, Stage stage) {
