@@ -8,7 +8,8 @@
   "license": "MIT",
   "environment": "*",
   "entrypoints": {
-    "main": ["fr.luuuccasss.hygiene.Hygiene"]
+    "main": ["fr.luuuccasss.hygiene.Hygiene"],
+    "client": ["fr.luuuccasss.hygiene.client.HygieneClient"]
   },
   "mixins": ["hygiene.mixins.json"],
   "depends": {
