@@ -1,0 +1,20 @@
+{
+  "schemaVersion": 1,
+  "id": "hygiene",
+  "version": "${version}",
+  "name": "Hygiène",
+  "description": "Les joueurs qui ne se lavent pas finissent par puer : mouches, animaux qui fuient, villageois dégoûtés et échanges plus chers.",
+  "authors": ["luuuccasss"],
+  "license": "MIT",
+  "environment": "*",
+  "entrypoints": {
+    "main": ["fr.luuuccasss.hygiene.Hygiene"]
+  },
+  "mixins": ["hygiene.mixins.json"],
+  "depends": {
+    "fabricloader": ">=0.16.0",
+    "minecraft": ">=1.21 <1.21.2",
+    "java": ">=21",
+    "fabric-api": "*"
+  }
+}
