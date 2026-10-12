@@ -2,7 +2,7 @@
 
 Mod Fabric pour Minecraft 1.21 – 1.21.1. Les joueurs qui ne se lavent pas finissent par **puer**, et tout le monde le leur fait sentir : mouches, animaux qui s'enfuient, villageois dégoûtés qui rentrent chez eux en courant et qui font payer plus cher.
 
-![Un joueur infect, entouré de mouches et d'un nuage d'odeur](docs/mouches.png)
+![Un joueur infect, entouré d'un essaim de mouches en 3D](docs/mouches-3d.png)
 
 ## Saleté
 
@@ -35,6 +35,14 @@ Le joueur sale ne voit que quelques mouches à distance, pour garder l'écran d�
 
 ![Vue du joueur sale : les villageois éternuent et s'éloignent](docs/vue-joueur.png)
 
+## Mouches en 3D
+
+Les joueurs qui ont le mod installé voient un **essaim de mouches en 3D** autour des joueurs sales : corps noir, gros yeux rouges, ailes translucides qui battent, vol en zigzag. Plus le joueur est sale, plus l'essaim est gros (2, 6 puis 14 mouches).
+
+Les joueurs qui n'ont pas le mod voient des mouches en particules à la place :
+
+![Mouches en particules, pour les joueurs sans le mod](docs/mouches.png)
+
 ## Commande
 
 | Commande | Effet |
@@ -48,7 +56,12 @@ Le joueur sale ne voit que quelques mouches à distance, pour garder l'écran d�
 1. Installer [Fabric Loader](https://fabricmc.net/use/) pour Minecraft 1.21 ou 1.21.1.
 2. Mettre [Fabric API](https://modrinth.com/mod/fabric-api) et le jar des [Releases](https://github.com/luuuccasss/hygiene/releases) dans le dossier `mods/`.
 
-Le mod fonctionne **uniquement côté serveur** : les joueurs peuvent se connecter avec un Minecraft normal, sans rien installer. Il marche aussi en solo.
+Le mod s'installe **sur le serveur**. Côté joueurs, il est **facultatif** :
+
+- **sans le mod**, ils peuvent se connecter avec un Minecraft normal et tout fonctionne, avec des mouches en particules ;
+- **avec le mod**, ils voient en plus les mouches en 3D.
+
+Il marche aussi en solo.
 
 ## Compiler
 
