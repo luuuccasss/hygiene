@@ -57,6 +57,7 @@ public class Hygiene implements ModInitializer {
         Stage stage = dirty.hygiene$getStage();
         announceStage(world, player, stage);
         if (stage != Stage.PROPRE && (world.getTime() + player.getId()) % 5 == 0) Stench.show(world, player, stage);
+        if (stage != Stage.PROPRE && (world.getTime() + player.getId()) % 10 == 0) Reactions.react(world, player, stage);
     }
 
     private static void announceStage(ServerWorld world, ServerPlayerEntity player, Stage stage) {
