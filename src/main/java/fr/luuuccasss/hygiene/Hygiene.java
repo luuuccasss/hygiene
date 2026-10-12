@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 import net.fabricmc.api.ModInitializer;
+import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
 import net.fabricmc.fabric.api.event.player.AttackEntityCallback;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents;
@@ -38,6 +39,7 @@ public class Hygiene implements ModInitializer {
         PlayerBlockBreakEvents.AFTER.register((world, player, pos, state, blockEntity) -> {
             if (player instanceof Dirty dirty) dirty.hygiene$setDirt(dirty.hygiene$getDirt() + BLOCK_BREAK);
         });
+        CommandRegistrationCallback.EVENT.register((dispatcher, registryAccess, environment) -> HygieneCommand.register(dispatcher));
         ServerPlayConnectionEvents.DISCONNECT.register((handler, server) -> forget(handler.getPlayer()));
         AttackEntityCallback.EVENT.register((player, world, hand, entity, hit) -> {
             if (player instanceof Dirty dirty) dirty.hygiene$setDirt(dirty.hygiene$getDirt() + ATTACK);
