@@ -25,6 +25,10 @@ La crasse survit à la mort : on ne se lave pas en mourant.
 | Puant | 50 – 75 % | Nuée de mouches, bourdonnement, nuage vert. Les animaux et les villageois **s'enfuient** en éternuant. Prix **+50 %** |
 | Infect | 75 – 100 % | Les villageois **rentrent chez eux en courant** et **refusent tout échange** (« Va te laver avant de revenir ! »). Les joueurs collés à toi ont **la nausée** |
 
+| Odeur | Puant | Infect |
+|---|---|---|
+| ![Stade odeur : 2 mouches](docs/stade-odeur.png) | ![Stade puant : 6 mouches](docs/stade-puant.png) | ![Stade infect : 14 mouches](docs/stade-infect.png) |
+
 À chaque changement de stade, un message s'affiche dans la barre d'action. Les villageois commentent aussi ton passage (« Quelqu'un vient de claquer sa porte. »).
 
 | Avant | 5 secondes plus tard |
@@ -33,11 +37,15 @@ La crasse survit à la mort : on ne se lave pas en mourant.
 
 Le joueur sale ne voit que quelques mouches à distance, pour garder l'écran dégagé :
 
-![Vue du joueur sale : les villageois éternuent et s'éloignent](docs/vue-joueur.png)
+| Avec le mod | Sans le mod |
+|---|---|
+| ![Vue du joueur sale avec les mouches 3D](docs/vue-joueur-3d.png) | ![Vue du joueur sale : les villageois éternuent et s'éloignent](docs/vue-joueur.png) |
 
 ## Mouches en 3D
 
 Les joueurs qui ont le mod installé voient un **essaim de mouches en 3D** autour des joueurs sales : corps noir, gros yeux rouges, ailes translucides qui battent, vol en zigzag. Plus le joueur est sale, plus l'essaim est gros (2, 6 puis 14 mouches).
+
+![Essaim de mouches 3D vu de plus loin](docs/mouches-zoom.png)
 
 Les joueurs qui n'ont pas le mod voient des mouches en particules à la place :
 
