@@ -3,6 +3,6 @@
   "minVersion": "0.8",
   "package": "fr.luuuccasss.hygiene.mixin",
   "compatibilityLevel": "JAVA_21",
-  "mixins": [],
+  "mixins": ["ServerPlayerEntityMixin"],
   "injectors": { "defaultRequire": 1 }
 }
